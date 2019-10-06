@@ -1,8 +1,8 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import * as retargetEvents from 'react-shadow-dom-retarget-events';
 import { IReactWebComponent } from './react-web-component.interface';
 import { IReactWebComponentConfig } from './react-web-component-config.interface';
+import { retargetEvents } from './react-retarget-events';
 
 const noOp = () => {};
 
@@ -33,6 +33,7 @@ export function ReactWebComponent<TProp>(config: IReactWebComponentConfig<TProp>
 
       constructor(...rest: any[]) {
         super(...rest);
+        Object.assign(__WebComponent.defaults, (this.computedProps || {}))
         createPropGettersAndSetters.apply(this, [__WebComponent.defaults]);
       }
 
@@ -41,10 +42,19 @@ export function ReactWebComponent<TProp>(config: IReactWebComponentConfig<TProp>
         let root: any;
         if (config.shadowDom) {
           root = this['attachShadow']({ mode: 'open' });
+          Object.defineProperty(root, "ownerDocument", { value: root });
+          root.createElement = (...args: any[]) => document.createElement.apply(root, args);
+          root.createTextNode = (...args: any[]) => document.createTextNode.apply(root, args);
         } else {
           root = this;
         }
+        this.mountPoint.id = "__shadowReact_element";
         root.appendChild(this.shadowStyle);
+        if (config.styles) {
+          const style = document.createElement('style');
+          style.textContent = config.styles;
+          root.appendChild(style);
+        }
         root.appendChild(this.mountPoint);
 
         ReactDOM.render(this.createComponent(), this.mountPoint);

@@ -1,2 +1,10 @@
-/* You can add global styles to this file, and also import other style files */
-@import '../node_modules/@elastic/eui/src/theme_light.scss';
+@import url('https://fonts.googleapis.com/css?family=Roboto+Mono:400,400i,700,700i');
+@import url('https://rsms.me/inter/inter-ui.css');
+
+#superDatePicker_popoverRoot{
+  @import '../node_modules/@elastic/eui/src/theme_light.scss';
+
+  input, label, p, span, div {
+    font-family: 'Roboto', 'Open Sans', sans-serif;
+  }
+}

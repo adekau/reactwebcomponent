@@ -7,3 +7,6 @@ export {
 export {
   ReactWebComponent
 } from './react-web-component.decorator';
+export {
+  retargetEvents
+} from './react-retarget-events';
