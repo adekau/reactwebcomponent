@@ -69,7 +69,7 @@ export function ReactWebComponent<TProp>(config: IReactWebComponentConfig<TProp>
       private createComponent() {
         return React.createElement(
           config.component,
-          Object.keys(this).reduce((acc, val) => {
+          Object.keys(this).reduce((acc: { [key: string]: any }, val: string) => {
             if (val in __WebComponent.defaults) acc[val] = this[val];
             return acc;
           }, {}),
