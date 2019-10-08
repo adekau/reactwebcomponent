@@ -62,9 +62,7 @@ export function retargetEvents(shadowRoot: HTMLElement | ShadowRoot): () => void
     });
     
     return function () {
-      
-      removeEventListeners.forEach(function (removeEventListener) {
-        
+      removeEventListeners.forEach((removeEventListener: () => void) => {
         removeEventListener();
       });
     };

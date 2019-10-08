@@ -22,10 +22,11 @@ function createPropGettersAndSetters<T extends object>(props: T): void {
 export function ReactWebComponent<TProp>(config: IReactWebComponentConfig<TProp>) {
   return function<T extends { new (...args:any[]): IReactWebComponent<TProp> }>(constructor: T) {
     return class __WebComponent extends constructor {
-      public readonly shadowStyle: HTMLLinkElement = document.createElement('link');
+      public readonly _shadowStyle: HTMLLinkElement = document.createElement('link');
       public static readonly defaults: TProp = config.propDefaults;
-      public onInit = this['onInit'] || noOp;
-      public onDestroy = this['onDestroy'] || noOp;
+      public readonly _defaults: TProp = Object.assign({}, __WebComponent.defaults);
+      public _onInit = this['onInit'] || noOp;
+      public _onDestroy = this['onDestroy'] || noOp;
       
       public static get observedAttributes() {
         return Object.keys(__WebComponent.defaults);
@@ -33,12 +34,12 @@ export function ReactWebComponent<TProp>(config: IReactWebComponentConfig<TProp>
 
       constructor(...rest: any[]) {
         super(...rest);
-        Object.assign(__WebComponent.defaults, (this.computedProps || {}))
-        createPropGettersAndSetters.apply(this, [__WebComponent.defaults]);
+        Object.assign(this._defaults, (this.computedProps || {}))
+        createPropGettersAndSetters.apply(this, [this._defaults]);
       }
 
       public connectedCallback(): void {
-        Object.assign(this.shadowStyle, { rel: 'stylesheet', type: 'text/css', href: 'assets/eui_theme_light.css' });
+        Object.assign(this._shadowStyle, { rel: 'stylesheet', type: 'text/css', href: 'assets/eui_theme_light.css' });
         let root: any;
         if (config.shadowDom) {
           root = this['attachShadow']({ mode: 'open' });
@@ -49,7 +50,7 @@ export function ReactWebComponent<TProp>(config: IReactWebComponentConfig<TProp>
           root = this;
         }
         this.mountPoint.id = "__shadowReact_element";
-        root.appendChild(this.shadowStyle);
+        root.appendChild(this._shadowStyle);
         if (config.styles) {
           const style = document.createElement('style');
           style.textContent = config.styles;
@@ -57,27 +58,27 @@ export function ReactWebComponent<TProp>(config: IReactWebComponentConfig<TProp>
         }
         root.appendChild(this.mountPoint);
 
-        ReactDOM.render(this.createComponent(), this.mountPoint);
+        ReactDOM.render(this._createComponent(), this.mountPoint);
         retargetEvents(root);
-        this.onInit();
+        this._onInit();
       }
 
       public disconnectedCallback(): void {
-        this.onDestroy();
+        this._onDestroy();
       }
 
-      private createComponent() {
+      private _createComponent() {
         return React.createElement(
           config.component,
           Object.keys(this).reduce((acc: { [key: string]: any }, val: string) => {
-            if (val in __WebComponent.defaults) acc[val] = this[val];
+            if (val in this._defaults) acc[val] = this[val];
             return acc;
           }, {}),
           React.createElement('slot'));
       }
 
       public attributeChangedCallback(name: string, oldVal: unknown, newVal: unknown): void {
-        ReactDOM.render(this.createComponent(), this.mountPoint);
+        ReactDOM.render(this._createComponent(), this.mountPoint);
       } 
     }
   }
