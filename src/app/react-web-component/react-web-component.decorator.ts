@@ -6,19 +6,6 @@ import { retargetEvents } from './react-retarget-events';
 
 const noOp = () => {};
 
-function createPropGettersAndSetters<T extends object>(props: T): void {
-  Object.keys(props).map((key: string) => {
-    const val = props[key];
-    type propType = typeof val;
-    Object.defineProperty(this, key, {
-      get: () => this.getAttribute(key) || val,
-      set: (newVal: propType) => this.setAttribute(key, newVal),
-      enumerable: true,
-      configurable: true
-    });
-  });
-}
-
 export function ReactWebComponent<TProp>(config: IReactWebComponentConfig<TProp>) {
   return function<T extends { new (...args:any[]): IReactWebComponent<TProp> }>(constructor: T) {
     return class __WebComponent extends constructor {
@@ -82,4 +69,17 @@ export function ReactWebComponent<TProp>(config: IReactWebComponentConfig<TProp>
       } 
     }
   }
+}
+
+function createPropGettersAndSetters<T extends object>(props: T): void {
+  Object.keys(props).map((key: string) => {
+    const val = props[key];
+    type propType = typeof val;
+    Object.defineProperty(this, key, {
+      get: () => this.getAttribute(key) || val,
+      set: (newVal: propType) => this.setAttribute(key, newVal),
+      enumerable: true,
+      configurable: true
+    });
+  });
 }
