@@ -1,9 +1,12 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto+Mono:400,400i,700,700i');
 @import url('https://rsms.me/inter/inter-ui.css');
 
-#superDatePicker_popoverRoot{
+#superDatePicker_popoverRoot, #superDatePicker_popoverRoot + div{
   @import '../node_modules/@elastic/eui/src/theme_light.scss';
-
+  .euiFieldNumber--compressed {
+    padding-left: 8px;
+    padding-right: 8px
+  }
   input, label, p, span, div {
     font-family: 'Inter UI', 'Open Sans', 'Roboto', sans-serif;
   }
