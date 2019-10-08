@@ -21,7 +21,7 @@ var mimickedReactEvents = {
 
 type HTMLElementOrShadowRoot = HTMLElement | ShadowRoot;
 
-export function retargetEvents(shadowRoot: HTMLElement | ShadowRoot): () => void {
+export function retargetEvents(shadowRoot: HTMLElementOrShadowRoot): () => void {
     var removeEventListeners = [];
 
     reactEvents.forEach(function (reactEventName) {

@@ -9,8 +9,11 @@ const noOp = () => {};
 export function ReactWebComponent<TProp>(config: IReactWebComponentConfig<TProp>) {
   return function<T extends { new (...args:any[]): IReactWebComponent<TProp> }>(constructor: T) {
     return class __WebComponent extends constructor {
-      public readonly _shadowStyle: HTMLLinkElement = document.createElement('link');
+      // static class vars
       public static readonly defaults: TProp = config.propDefaults;
+
+      // instanced class vars
+      public readonly _shadowStyle: HTMLLinkElement = document.createElement('link');
       public readonly _defaults: TProp = Object.assign({}, __WebComponent.defaults);
       public _onInit = this['onInit'] || noOp;
       public _onDestroy = this['onDestroy'] || noOp;
@@ -30,7 +33,9 @@ export function ReactWebComponent<TProp>(config: IReactWebComponentConfig<TProp>
         let root: any;
         if (config.shadowDom) {
           root = this['attachShadow']({ mode: 'open' });
+          // used by react for where the document root is
           Object.defineProperty(root, "ownerDocument", { value: root });
+          // reactdom assumes these functions exist (normally document root is 'document')
           root.createElement = (...args: any[]) => document.createElement.apply(root, args);
           root.createTextNode = (...args: any[]) => document.createTextNode.apply(root, args);
         } else {
@@ -46,11 +51,16 @@ export function ReactWebComponent<TProp>(config: IReactWebComponentConfig<TProp>
         root.appendChild(this.mountPoint);
 
         ReactDOM.render(this._createComponent(), this.mountPoint);
+
+        // take react synthetic events and propagate them through the shadow dom.
         retargetEvents(root);
+
+        // custom lifecycle hook once all this initial config is done
         this._onInit();
       }
 
       public disconnectedCallback(): void {
+        // custom lifecycle hook for once the webcomponent is destroyed from the dom
         this._onDestroy();
       }
 
@@ -71,6 +81,7 @@ export function ReactWebComponent<TProp>(config: IReactWebComponentConfig<TProp>
   }
 }
 
+// dynamically create getter/setter properties for props as attributes on the webcomponent element
 function createPropGettersAndSetters<T extends object>(props: T): void {
   Object.keys(props).map((key: string) => {
     const val = props[key];
