@@ -1,5 +1,5 @@
 import { EuiSuperDatePicker, EuiSuperDatePickerProps } from '@elastic/eui';
-import { ReactWebComponent, IReactWebComponent, retargetEvents } from '@dekau/react-web-component';
+import { ReactWebComponent, IReactWebComponent } from '@dekau/react-web-component';
 import dateMath from '@elastic/datemath';
 
 const commonDurationRanges = [
