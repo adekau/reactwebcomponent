@@ -1,5 +1,5 @@
 import { EuiSuperDatePicker, EuiSuperDatePickerProps } from '@elastic/eui';
-import { ReactWebComponent, IReactWebComponent, retargetEvents } from '../react-web-component';
+import { ReactWebComponent, IReactWebComponent, retargetEvents } from '@dekau/react-web-component';
 import dateMath from '@elastic/datemath';
 
 const commonDurationRanges = [
@@ -15,7 +15,7 @@ const commonDurationRanges = [
 
 export type SuperDatePickerWCProps = EuiSuperDatePickerProps & {
   isDisabled?: boolean;
-}
+};
 
 @ReactWebComponent<SuperDatePickerWCProps>({
   component: EuiSuperDatePicker,
@@ -42,7 +42,8 @@ export type SuperDatePickerWCProps = EuiSuperDatePickerProps & {
       });
     },
     customQuickSelectPanels: null,
-  }
+  },
+  styleUrls: ['assets/eui_theme_light.css']
 })
 export class EuiSuperDatePickerWC extends HTMLElement implements IReactWebComponent<SuperDatePickerWCProps> {
   public readonly mountPoint: HTMLDivElement = document.createElement('div');
