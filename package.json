@@ -46,7 +46,7 @@
     "karma-coverage-istanbul-reporter": "~2.0.1",
     "karma-jasmine": "~2.0.1",
     "karma-jasmine-html-reporter": "^1.4.0",
-    "moment": "^2.24.0",
+    "moment": "^2.29.4",
     "protractor": "~5.4.0",
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
